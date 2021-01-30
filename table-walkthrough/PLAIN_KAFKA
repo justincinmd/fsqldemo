@@ -1,0 +1,11 @@
+        tEnv.executeSql("CREATE TABLE transactions (\n" +
+                "    account_id  BIGINT,\n" +
+                "    amount      BIGINT,\n" +
+                "    transaction_time TIMESTAMP(3),\n" +
+                "    WATERMARK FOR transaction_time AS transaction_time - INTERVAL '5' SECOND\n" +
+                ") WITH (\n" +
+                "    'connector' = 'kafka',\n" +
+                "    'topic'     = 'transactions',\n" +
+                "    'properties.bootstrap.servers' = 'kafka:9092',\n" +
+                "    'format'    = 'csv'\n" +
+                ")");
