@@ -1,0 +1,45 @@
+jobmanager_1      | == Abstract Syntax Tree ==
+jobmanager_1      | LogicalProject(account_id=[$0], account_name=[$4], amount=[$1])
+jobmanager_1      | +- LogicalJoin(condition=[=($0, $3)], joinType=[inner])
+jobmanager_1      |    :- LogicalTableScan(table=[[default_catalog, default_database, transactions]])
+jobmanager_1      |    +- LogicalTableScan(table=[[default_catalog, default_database, accounts]])
+jobmanager_1      |                                                                                                                                       jobmanager_1      | == Optimized Logical Plan ==
+jobmanager_1      | Calc(select=[account_id, account_name, amount])
+jobmanager_1      | +- Join(joinType=[InnerJoin], where=[=(account_id, account_id0)], select=[account_id, amount, account_id0, account_name], leftInputSpe
+c=[JoinKeyContainsUniqueKey], rightInputSpec=[JoinKeyContainsUniqueKey])
+jobmanager_1      |    :- Exchange(distribution=[hash[account_id]])
+jobmanager_1      |    :  +- Calc(select=[account_id, amount])
+jobmanager_1      |    :     +- ChangelogNormalize(key=[account_id])
+jobmanager_1      |    :        +- Exchange(distribution=[hash[account_id]])
+jobmanager_1      |    :           +- TableSourceScan(table=[[default_catalog, default_database, transactions]], fields=[account_id, amount, transaction_time])
+jobmanager_1      |    +- Exchange(distribution=[hash[account_id]])                                                                                       jobmanager_1      |       +- Calc(select=[account_id, account_name])
+jobmanager_1      |          +- ChangelogNormalize(key=[account_id])
+jobmanager_1      |             +- Exchange(distribution=[hash[account_id]])
+jobmanager_1      |                +- TableSourceScan(table=[[default_catalog, default_database, accounts]], fields=[account_id, account_name, transaction
+_time])
+jobmanager_1      |
+jobmanager_1      | == Physical Execution Plan ==
+jobmanager_1      | Stage 1 : Data Source                                                                                                                 jobmanager_1      |     content : Source: TableSourceScan(table=[[default_catalog, default_database, transactions]], fields=[account_id, amount, transacti
+on_time])                                                                                                                                                 jobmanager_1      |
+jobmanager_1      |     Stage 3 : Operator
+jobmanager_1      |             content : ChangelogNormalize(key=[account_id])
+jobmanager_1      |             ship_strategy : HASH                                                                                                      jobmanager_1      |
+jobmanager_1      |             Stage 4 : Operator
+jobmanager_1      |                     content : Calc(select=[account_id, amount])                                                                       jobmanager_1      |                     ship_strategy : FORWARD
+jobmanager_1      |
+jobmanager_1      | Stage 6 : Data Source
+jobmanager_1      |     content : Source: TableSourceScan(table=[[default_catalog, default_database, accounts]], fields=[account_id, account_name, transac
+tion_time])
+jobmanager_1      |
+jobmanager_1      |     Stage 8 : Operator
+jobmanager_1      |             content : ChangelogNormalize(key=[account_id])                                                                            jobmanager_1      |             ship_strategy : HASH
+jobmanager_1      |
+jobmanager_1      |             Stage 9 : Operator                                                                                                        jobmanager_1      |                     content : Calc(select=[account_id, account_name])
+jobmanager_1      |                     ship_strategy : FORWARD
+jobmanager_1      |
+jobmanager_1      |                     Stage 11 : Operator
+jobmanager_1      |                             content : Join(joinType=[InnerJoin], where=[(account_id = account_id0)], select=[account_id, amount, accou
+nt_id0, account_name], leftInputSpec=[JoinKeyContainsUniqueKey], rightInputSpec=[JoinKeyContainsUniqueKey])                                               jobmanager_1      |                             ship_strategy : HASH
+jobmanager_1      |                                                                                                                                       jobmanager_1      |                             Stage 12 : Operator
+jobmanager_1      |                                     content : Calc(select=[account_id, account_name, amount])
+jobmanager_1      |                                     ship_strategy : FORWARD

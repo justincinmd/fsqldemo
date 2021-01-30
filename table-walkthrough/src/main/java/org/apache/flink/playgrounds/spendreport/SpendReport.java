@@ -77,6 +77,7 @@ public class SpendReport {
         // the topo is dynamic.
         // MODIFY THIS LINE, THEN docker-compose build, docker-compose up to run.
         TableResult tr = tEnv.sqlQuery("SELECT transactions.account_id, account_name, amount FROM transactions INNER JOIN accounts ON transactions.account_id = accounts.account_id").execute();
+        // TableResult tr = tEnv.executeSql("EXPLAIN PLAN FOR SELECT transactions.account_id, account_name, amount FROM transactions INNER JOIN accounts ON transactions.account_id = accounts.account_id");
 
         // TODO: Replace this with Kafka Output - print is useful for testing sql
         tr.print();
